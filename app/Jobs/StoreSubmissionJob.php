@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Events\SubmissionSaved;
-use App\Models\Submission;
+use App\DTO\SubmissionData;
+use App\Services\SubmissionService;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -17,7 +17,7 @@ class StoreSubmissionJob implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        protected array $data
+        protected SubmissionData $data
     ) {
     }
 
@@ -27,8 +27,8 @@ class StoreSubmissionJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            $submission = Submission::query()->create($this->data);
-            SubmissionSaved::dispatch($submission);
+            $submissionService = new SubmissionService();
+            $submissionService->create($this->data);
         } catch (Exception $e) {
             Log::error($e->getMessage());
         }

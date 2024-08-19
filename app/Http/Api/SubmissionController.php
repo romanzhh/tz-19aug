@@ -2,6 +2,7 @@
 
 namespace App\Http\Api;
 
+use App\DTO\SubmissionData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSubmissionRequest;
 use App\Jobs\StoreSubmissionJob;
@@ -11,8 +12,8 @@ class SubmissionController extends Controller
 {
     public function store(StoreSubmissionRequest $request): JsonResponse
     {
-        StoreSubmissionJob::dispatch($request->validated());
-
+        $submissionData = SubmissionData::from($request);
+        StoreSubmissionJob::dispatch($submissionData);
         return response()->json('Success!');
     }
 }
